@@ -30,13 +30,13 @@ class Light:
         self.is_on = False
         self._element = div(className="lightbulb", id="my-div")
 
-    def light(self, e=None):
+    def on_state_changed(self, e=None):
         # Toggle the light state
         self.is_on = not self.is_on
         self._element.classList.toggle("on")
 
     def finish(self):
-        when(switch.state_changed)(self.light)
+        when(switch.state_changed)(self.on_state_changed)
 
 
 # Compose the UI
