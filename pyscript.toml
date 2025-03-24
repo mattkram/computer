@@ -1,7 +1,2 @@
-name = "Raspy Resonance"
-# Install packages to be used in this project
+name = "Computer"
 packages = []
-
-# # Please use the official documentation for further explanation and examples
-# of how to use these features if they are unfamiliar to you.
-# https://docs.pyscript.net/2025.2.1/user-guide/configuration
