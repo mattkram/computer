@@ -26,7 +26,8 @@ class Switch:
 
 
 class Light:
-    def __init__(self):
+    def __init__(self, input):
+        self.input = input
         self.is_on = False
         self._element = div(className="lightbulb", id="my-div")
 
@@ -36,12 +37,12 @@ class Light:
         self._element.classList.toggle("on")
 
     def finish(self):
-        when(switch.state_changed)(self.on_state_changed)
+        when(self.input.state_changed)(self.on_state_changed)
 
 
 # Compose the UI
-light = Light()
 switch = Switch()
+light = Light(input=switch)
 
 page.append(
     switch._element,
