@@ -19,7 +19,7 @@ class Switch:
         state = "open" if self.is_open else "closed"
         self._element.innerHTML = f"The switch is {state}"
 
-    def finish(self):
+    def _finish(self):
         # Late bind the click event handler
         when("click", f"#{self._id}")(self.on_click)
         when(self.state_changed)(self.on_state_changed)
@@ -36,18 +36,28 @@ class Light:
         self.is_on = not self.is_on
         self._element.classList.toggle("on")
 
-    def finish(self):
+    def _finish(self):
         when(self.input.state_changed)(self.on_state_changed)
+
+
+class App:
+    def __init__(self, components=None):
+        self._components = components or []
+
+    def add_component(self, component):
+        self._components.append(component)
+
+    def run(self):
+        page.append(
+            div(children=[component._element for component in self._components])
+        )
+        for component in self._components:
+            component._finish()
 
 
 # Compose the UI
 switch = Switch()
 light = Light(input=switch)
 
-page.append(
-    switch._element,
-    light._element,
-)
-
-switch.finish()
-light.finish()
+app = App([switch, light])
+app.run()
