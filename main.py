@@ -1,28 +1,49 @@
 from pyscript import Event
-from pyscript.web import button, div, page, when
+from pyscript.web import div, page, when
 
 
 class Switch:
     def __init__(self):
         self.is_open = True
-
         self.state_changed = Event()
-        self._id = f"switch-{hash(self)}"
-        self._element = button(id=self._id)
-        self.on_state_changed()
+
+        self._id = f"{self.__class__.__name__}-{hash(self)}"
+        self._element = div(
+            div(
+                div(className="circuit-line circuit-line-left"),
+                div(className="circuit-line circuit-line-right"),
+                div(className="switch-base"),
+                div(className="switch-lever"),
+                div(className="status", id=f"{self._id}-status"),
+                id=f"{self._id}-switch",
+                className="switch",
+            ),
+            className="switch-container",
+            id=self._id,
+        )
 
     def on_click(self, e=None):
         self.is_open = not self.is_open
         self.state_changed.trigger(None)
 
-    def on_state_changed(self, e=None):
-        state = "open" if self.is_open else "closed"
-        self._element.innerHTML = f"The switch is {state}"
+    def draw(self, e=None):
+        switch_element = page[f"#{self._id}-switch"]
+        status_element = page[f"#{self._id}-status"]
+
+        if self.is_open:
+            switch_element.classes.add("open")
+            switch_element.classes.remove("closed")
+            status_element.textContent = "OPEN"
+        else:
+            switch_element.classes.add("closed")
+            switch_element.classes.remove("open")
+            status_element.textContent = "CLOSED"
 
     def _finish(self):
         # Late bind the click event handler
         when("click", f"#{self._id}")(self.on_click)
-        when(self.state_changed)(self.on_state_changed)
+        when(self.state_changed)(self.draw)
+        self.draw()
 
 
 class Light:
