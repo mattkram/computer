@@ -49,16 +49,27 @@ class Switch:
 class Light:
     def __init__(self, input):
         self.input = input
+
         self.is_on = False
+        self.state_changed = Event()
+
         self._element = div(className="lightbulb", id="my-div")
 
-    def on_state_changed(self, e=None):
+    def on_input_state_changed(self, e=None):
         # Toggle the light state
         self.is_on = not self.is_on
-        self._element.classes.toggle("on")
+        self.state_changed.trigger(None)
+
+    def draw(self):
+        if self.is_on:
+            self._element.classes.add("on")
+        else:
+            self._element.classes.remove("on")
 
     def _finish(self):
-        when(self.input.state_changed)(self.on_state_changed)
+        when(self.input.state_changed)(self.on_input_state_changed)
+        when(self.state_changed)(self.draw)
+        self.draw()
 
 
 class App:
