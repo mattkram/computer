@@ -29,6 +29,16 @@ def on(attr_name: str, event="event"):
 
 
 class Component:
+    @property
+    def id(self):
+        """A unique string identifier for the component."""
+        return f"{self.__class__.__name__}-{hash(self)}"
+
+    @property
+    def selector(self):
+        """A CSS query selector for the component by its ID."""
+        return f"#{self.id}"
+
     def draw(self):
         return None
 
@@ -59,7 +69,7 @@ class Component:
             if event == "event":
                 when(obj)(func)
             elif event == "click":
-                when("click", f"#{obj.id}")(func)
+                when("click", self.selector)(func)
             else:
                 raise ValueError(f"Unimplemented event type {event}")
 
@@ -71,19 +81,18 @@ class Switch(Component):
         self.is_open = True
         self.state_changed = Event()
 
-        self._id = f"{self.__class__.__name__}-{hash(self)}"
         self._element = div(
             div(
                 div(className="circuit-line circuit-line-left"),
                 div(className="circuit-line circuit-line-right"),
                 div(className="switch-base"),
                 div(className="switch-lever"),
-                div(className="status", id=f"{self._id}-status"),
-                id=f"{self._id}-switch",
+                div(className="status", id=f"{self.id}-status"),
+                id=f"{self.id}-switch",
                 className="switch",
             ),
             className="switch-container",
-            id=self._id,
+            id=self.id,
         )
 
     @on("self._element", event="click")
@@ -93,8 +102,8 @@ class Switch(Component):
 
     @on("self.state_changed")
     def draw(self, e=None):
-        switch_element = page[f"#{self._id}-switch"]
-        status_element = page[f"#{self._id}-status"]
+        switch_element = page[f"{self.selector}-switch"]
+        status_element = page[f"{self.selector}-status"]
 
         if self.is_open:
             switch_element.classes.add("open")
@@ -114,7 +123,7 @@ class Light(Component):
         self.is_on = False
         self.state_changed = Event()
 
-        self._element = div(className="lightbulb", id="my-div")
+        self._element = div(className="lightbulb", id=self.id)
 
     @on("self.input.state_changed")
     def on_input_state_changed(self, e=None):
