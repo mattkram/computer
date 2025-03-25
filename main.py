@@ -20,9 +20,9 @@ class App:
 _registered_handlers = {}
 
 
-def on(attr_name: str):
+def on(attr_name: str, event="event"):
     def decorator(method):
-        _registered_handlers[method] = attr_name
+        _registered_handlers[method] = (attr_name, event)
         return method
 
     return decorator
@@ -38,7 +38,7 @@ class Component:
             # Use the instance of the method instead of name since the function
             # object should be unique.
             try:
-                attr_name = _registered_handlers[method]
+                (attr_name, event) = _registered_handlers[method]
             except (KeyError, TypeError):
                 continue  # Wasn't registered, skip to next
 
@@ -56,7 +56,12 @@ class Component:
             func = getattr(self, method.__name__)
 
             # Assign the event listener
-            when(obj)(func)
+            if event == "event":
+                when(obj)(func)
+            elif event == "click":
+                when("click", f"#{obj.id}")(func)
+            else:
+                raise ValueError(f"Unimplemented event type {event}")
 
         self.draw()
 
@@ -81,6 +86,7 @@ class Switch(Component):
             id=self._id,
         )
 
+    @on("self._element", event="click")
     def on_click(self, e=None):
         self.is_open = not self.is_open
         self.state_changed.trigger(None)
@@ -98,11 +104,6 @@ class Switch(Component):
             switch_element.classes.add("closed")
             switch_element.classes.remove("open")
             status_element.textContent = "CLOSED"
-
-    def _finish(self):
-        super()._finish()
-        when("click", f"#{self._id}")(self.on_click)
-        self.draw()
 
 
 class Light(Component):
