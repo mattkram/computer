@@ -2,6 +2,21 @@ from pyscript import Event
 from pyscript.web import div, page, when
 
 
+class App:
+    def __init__(self, components=None):
+        self._components = components or []
+
+    def add_component(self, component):
+        self._components.append(component)
+
+    def run(self):
+        page.append(
+            div(children=[component._element for component in self._components])
+        )
+        for component in self._components:
+            component._finish()
+
+
 class Switch:
     def __init__(self):
         self.is_open = True
@@ -72,24 +87,14 @@ class Light:
         self.draw()
 
 
-class App:
-    def __init__(self, components=None):
-        self._components = components or []
-
-    def add_component(self, component):
-        self._components.append(component)
-
-    def run(self):
-        page.append(
-            div(children=[component._element for component in self._components])
-        )
-        for component in self._components:
-            component._finish()
-
-
 # Compose the UI
-switch = Switch()
-light = Light(input=switch)
+app = App()
 
-app = App([switch, light])
+# Make two independent switches
+for i in range(2):
+    switch = Switch()
+    light = Light(input=switch)
+    app.add_component(switch)
+    app.add_component(light)
+
 app.run()
