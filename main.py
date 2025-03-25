@@ -17,50 +17,6 @@ class App:
             component._finish()
 
 
-class Switch:
-    def __init__(self):
-        self.is_open = True
-        self.state_changed = Event()
-
-        self._id = f"{self.__class__.__name__}-{hash(self)}"
-        self._element = div(
-            div(
-                div(className="circuit-line circuit-line-left"),
-                div(className="circuit-line circuit-line-right"),
-                div(className="switch-base"),
-                div(className="switch-lever"),
-                div(className="status", id=f"{self._id}-status"),
-                id=f"{self._id}-switch",
-                className="switch",
-            ),
-            className="switch-container",
-            id=self._id,
-        )
-
-    def on_click(self, e=None):
-        self.is_open = not self.is_open
-        self.state_changed.trigger(None)
-
-    def draw(self, e=None):
-        switch_element = page[f"#{self._id}-switch"]
-        status_element = page[f"#{self._id}-status"]
-
-        if self.is_open:
-            switch_element.classes.add("open")
-            switch_element.classes.remove("closed")
-            status_element.textContent = "OPEN"
-        else:
-            switch_element.classes.add("closed")
-            switch_element.classes.remove("open")
-            status_element.textContent = "CLOSED"
-
-    def _finish(self):
-        # Late bind the click event handler
-        when("click", f"#{self._id}")(self.on_click)
-        when(self.state_changed)(self.draw)
-        self.draw()
-
-
 _registered_handlers = {}
 
 
@@ -72,26 +28,9 @@ def on(attr_name: str):
     return decorator
 
 
-class Light:
-    def __init__(self, input):
-        self.input = input
-
-        self.is_on = False
-        self.state_changed = Event()
-
-        self._element = div(className="lightbulb", id="my-div")
-
-    @on("self.input.state_changed")
-    def on_input_state_changed(self, e=None):
-        # Toggle the light state
-        self.is_on = not self.is_on
-        self.state_changed.trigger(None)
-
+class Component:
     def draw(self):
-        if self.is_on:
-            self._element.classes.add("on")
-        else:
-            self._element.classes.remove("on")
+        return None
 
     def _finish(self):
         for method_name, method in self.__class__.__dict__.items():
@@ -119,8 +58,75 @@ class Light:
             # Assign the event listener
             when(obj)(func)
 
-        when(self.state_changed)(self.draw)
         self.draw()
+
+
+class Switch(Component):
+    def __init__(self):
+        self.is_open = True
+        self.state_changed = Event()
+
+        self._id = f"{self.__class__.__name__}-{hash(self)}"
+        self._element = div(
+            div(
+                div(className="circuit-line circuit-line-left"),
+                div(className="circuit-line circuit-line-right"),
+                div(className="switch-base"),
+                div(className="switch-lever"),
+                div(className="status", id=f"{self._id}-status"),
+                id=f"{self._id}-switch",
+                className="switch",
+            ),
+            className="switch-container",
+            id=self._id,
+        )
+
+    def on_click(self, e=None):
+        self.is_open = not self.is_open
+        self.state_changed.trigger(None)
+
+    @on("self.state_changed")
+    def draw(self, e=None):
+        switch_element = page[f"#{self._id}-switch"]
+        status_element = page[f"#{self._id}-status"]
+
+        if self.is_open:
+            switch_element.classes.add("open")
+            switch_element.classes.remove("closed")
+            status_element.textContent = "OPEN"
+        else:
+            switch_element.classes.add("closed")
+            switch_element.classes.remove("open")
+            status_element.textContent = "CLOSED"
+
+    def _finish(self):
+        super()._finish()
+        when("click", f"#{self._id}")(self.on_click)
+        self.draw()
+
+
+class Light(Component):
+    def __init__(self, input):
+        super().__init__()
+        self.input = input
+
+        self.is_on = False
+        self.state_changed = Event()
+
+        self._element = div(className="lightbulb", id="my-div")
+
+    @on("self.input.state_changed")
+    def on_input_state_changed(self, e=None):
+        # Toggle the light state
+        self.is_on = not self.is_on
+        self.state_changed.trigger(None)
+
+    @on("self.state_changed")
+    def draw(self):
+        if self.is_on:
+            self._element.classes.add("on")
+        else:
+            self._element.classes.remove("on")
 
 
 # Compose the UI
