@@ -55,7 +55,7 @@ class Light:
     def on_state_changed(self, e=None):
         # Toggle the light state
         self.is_on = not self.is_on
-        self._element.classList.toggle("on")
+        self._element.classes.toggle("on")
 
     def _finish(self):
         when(self.input.state_changed)(self.on_state_changed)
