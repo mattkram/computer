@@ -61,6 +61,17 @@ class Switch:
         self.draw()
 
 
+_registered_handlers = {}
+
+
+def on(attr_name: str):
+    def decorator(method):
+        _registered_handlers[method] = attr_name
+        return method
+
+    return decorator
+
+
 class Light:
     def __init__(self, input):
         self.input = input
@@ -70,6 +81,7 @@ class Light:
 
         self._element = div(className="lightbulb", id="my-div")
 
+    @on("self.input.state_changed")
     def on_input_state_changed(self, e=None):
         # Toggle the light state
         self.is_on = not self.is_on
@@ -82,7 +94,31 @@ class Light:
             self._element.classes.remove("on")
 
     def _finish(self):
-        when(self.input.state_changed)(self.on_input_state_changed)
+        for method_name, method in self.__class__.__dict__.items():
+            # Check whether any of the class's methods are in the registry.
+            # Use the instance of the method instead of name since the function
+            # object should be unique.
+            try:
+                attr_name = _registered_handlers[method]
+            except (KeyError, TypeError):
+                continue  # Wasn't registered, skip to next
+
+            # Split the watched event name, making sure it starts with self
+            attrs = attr_name.split(".")
+            if attrs[0] != "self":
+                continue
+
+            # Traverse the nested attributes to get the final Event
+            obj = self
+            for a in attrs[1:]:
+                obj = getattr(obj, a)
+
+            # Get the bound method
+            func = getattr(self, method.__name__)
+
+            # Assign the event listener
+            when(obj)(func)
+
         when(self.state_changed)(self.draw)
         self.draw()
 
