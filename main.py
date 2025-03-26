@@ -20,7 +20,7 @@ class Switch(Component):
             className="switch",
         )
 
-    @on("self.element", event="click")
+    @on(event="click")
     def toggle_state(self):
         self.is_open = not self.is_open
 
