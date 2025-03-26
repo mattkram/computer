@@ -57,9 +57,11 @@ class Component:
             if attrs[0] != "self":
                 continue
 
-            # Traverse the nested attributes to get the final Event
+            # Traverse the nested attributes to get the attribute value and its parent
             obj = self
+            parent = None
             for a in attrs[1:]:
+                parent = obj
                 obj = getattr(obj, a)
 
             # Get the bound method
@@ -67,11 +69,15 @@ class Component:
 
             # Assign the event listener
             if event == "event":
+                # The value is an Event object
                 when(obj)(func)
             elif event == "changed":
+                # The value will be derived from the State descriptor
+                # We need the parent to access the actual descriptor object
+                assert parent is not None
                 descriptor_name = attrs[-1]
-                descriptor = getattr(self.__class__, descriptor_name, None)
-                event_obj = descriptor.get_event(self)
+                descriptor = getattr(parent.__class__, descriptor_name, None)
+                event_obj = descriptor.get_event(parent)
                 when(event_obj)(func)
             elif event == "click":
                 when("click", self.selector)(func)
