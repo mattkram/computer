@@ -32,7 +32,7 @@ class Component:
         for name, value in kwargs.items():
             setattr(self, name, value)
 
-    __class_name__ = None
+    __css_class__ = None
 
     @property
     def children(self):
@@ -41,9 +41,7 @@ class Component:
     @property
     def element(self):
         if self._element is None:
-            self._element = div(
-                self.children, id=self.id, className=self.__class_name__
-            )
+            self._element = div(self.children, id=self.id, className=self.__css_class__)
         return self._element
 
     @property

@@ -6,7 +6,7 @@ from app import App, Component, Input, State, on
 class Switch(Component):
     is_open = State(default=True)
 
-    __class_name__ = "switch-container"
+    __css_class__ = "switch-container"
 
     @property
     def children(self):
@@ -43,7 +43,7 @@ class Light(Component):
     input = Input()
     is_on = State(default=False)
 
-    __class_name__ = "lightbulb"
+    __css_class__ = "lightbulb"
 
     @on("self.input.is_open")
     def on_input_state_changed(self, e=None):
