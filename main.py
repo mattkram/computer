@@ -6,22 +6,21 @@ from app import App, Component, Input, State, on
 class Switch(Component):
     is_open = State(default=True)
 
-    def __init__(self):
-        self._element = div(
-            div(
-                div(className="circuit-line circuit-line-left"),
-                div(className="circuit-line circuit-line-right"),
-                div(className="switch-base"),
-                div(className="switch-lever"),
-                div(className="status", id=f"{self.id}-status"),
-                id=f"{self.id}-switch",
-                className="switch",
-            ),
-            className="switch-container",
-            id=self.id,
+    __class_name__ = "switch-container"
+
+    @property
+    def children(self):
+        return div(
+            div(className="circuit-line circuit-line-left"),
+            div(className="circuit-line circuit-line-right"),
+            div(className="switch-base"),
+            div(className="switch-lever"),
+            div(className="status", id=f"{self.id}-status"),
+            id=f"{self.id}-switch",
+            className="switch",
         )
 
-    @on("self._element", event="click")
+    @on("self.element", event="click")
     def on_click(self, e=None):
         self.is_open = not self.is_open
 
@@ -44,9 +43,7 @@ class Light(Component):
     input = Input()
     is_on = State(default=False)
 
-    def __init__(self, input):
-        super().__init__(input=input)
-        self._element = div(className="lightbulb", id=self.id)
+    __class_name__ = "lightbulb"
 
     @on("self.input.is_open")
     def on_input_state_changed(self, e=None):

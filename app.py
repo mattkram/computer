@@ -10,9 +10,7 @@ class App:
         self._components.append(component)
 
     def run(self):
-        page.append(
-            div(children=[component._element for component in self._components])
-        )
+        page.append(div(children=[component.element for component in self._components]))
         for component in self._components:
             component._finish()
 
@@ -30,8 +28,23 @@ def on(attr_name: str, event="changed"):
 
 class Component:
     def __init__(self, **kwargs):
+        self._element = None
         for name, value in kwargs.items():
             setattr(self, name, value)
+
+    __class_name__ = None
+
+    @property
+    def children(self):
+        return ""
+
+    @property
+    def element(self):
+        if self._element is None:
+            self._element = div(
+                self.children, id=self.id, className=self.__class_name__
+            )
+        return self._element
 
     @property
     def id(self):
