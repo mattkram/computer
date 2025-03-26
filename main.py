@@ -21,11 +21,11 @@ class Switch(Component):
         )
 
     @on("self.element", event="click")
-    def toggle_state(self, e=None):
+    def toggle_state(self):
         self.is_open = not self.is_open
 
     @on("self.is_open")
-    def draw(self, e=None):
+    def draw(self):
         switch_element = page[f"{self.selector}-switch"]
         status_element = page[f"{self.selector}-status"]
 
@@ -46,7 +46,7 @@ class Light(Component):
     __css_class__ = "lightbulb"
 
     @on("self.input.is_open")
-    def toggle_state(self, e=None):
+    def toggle_state(self):
         self.is_on = not self.is_on
 
     @on("self.is_on")
