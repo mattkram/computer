@@ -5,8 +5,9 @@ from app import App, Component, State, on
 
 
 class Switch(Component):
+    is_open = State(default=True)
+
     def __init__(self):
-        self.is_open = True
         self.state_changed = Event()
 
         self._element = div(
@@ -28,7 +29,7 @@ class Switch(Component):
         self.is_open = not self.is_open
         self.state_changed.trigger(None)
 
-    @on("self.state_changed")
+    @on("self.is_open", event="changed")
     def draw(self, e=None):
         switch_element = page[f"{self.selector}-switch"]
         status_element = page[f"{self.selector}-status"]
