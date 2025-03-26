@@ -21,7 +21,7 @@ class Switch(Component):
         )
 
     @on("self.element", event="click")
-    def on_click(self, e=None):
+    def toggle_state(self, e=None):
         self.is_open = not self.is_open
 
     @on("self.is_open")
@@ -46,8 +46,7 @@ class Light(Component):
     __css_class__ = "lightbulb"
 
     @on("self.input.is_open")
-    def on_input_state_changed(self, e=None):
-        # Toggle the light state
+    def toggle_state(self, e=None):
         self.is_on = not self.is_on
 
     @on("self.is_on")
