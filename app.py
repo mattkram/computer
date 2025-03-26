@@ -113,6 +113,5 @@ class State(Input):
 
     def __set__(self, instance, value):
         super().__set__(instance, value)
-
         event = self.get_event(instance)
         event.trigger(value)
