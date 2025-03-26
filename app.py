@@ -29,6 +29,10 @@ def on(attr_name: str, event="event"):
 
 
 class Component:
+    def __init__(self, **kwargs):
+        for name, value in kwargs.items():
+            setattr(self, name, value)
+
     @property
     def id(self):
         """A unique string identifier for the component."""

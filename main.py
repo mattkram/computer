@@ -45,8 +45,7 @@ class Light(Component):
     is_on = State(default=False)
 
     def __init__(self, input):
-        super().__init__()
-        self.input = input
+        super().__init__(input=input)
         self._element = div(className="lightbulb", id=self.id)
 
     @on("self.input.is_open", event="changed")
