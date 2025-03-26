@@ -1,7 +1,7 @@
 from pyscript import Event
 from pyscript.web import div, page
 
-from app import App, Component, on
+from app import App, Component, State, on
 
 
 class Switch(Component):
@@ -44,12 +44,11 @@ class Switch(Component):
 
 
 class Light(Component):
+    is_on = State(default=False)
+
     def __init__(self, input):
         super().__init__()
         self.input = input
-
-        self.is_on = False
-        self.state_changed = Event()
 
         self._element = div(className="lightbulb", id=self.id)
 
@@ -57,9 +56,8 @@ class Light(Component):
     def on_input_state_changed(self, e=None):
         # Toggle the light state
         self.is_on = not self.is_on
-        self.state_changed.trigger(None)
 
-    @on("self.state_changed")
+    @on("self.is_on", event="changed")
     def draw(self):
         if self.is_on:
             self._element.classes.add("on")

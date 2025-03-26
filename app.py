@@ -1,3 +1,4 @@
+from pyscript import Event
 from pyscript.web import div, page, when
 
 
@@ -67,9 +68,33 @@ class Component:
             # Assign the event listener
             if event == "event":
                 when(obj)(func)
+            elif event == "changed":
+                descriptor_name = attrs[-1]
+                descriptor = getattr(self.__class__, descriptor_name, None)
+                event_obj = descriptor.get_event(self)
+                when(event_obj)(func)
             elif event == "click":
                 when("click", self.selector)(func)
             else:
                 raise ValueError(f"Unimplemented event type {event}")
 
         self.draw()
+
+
+class State:
+    def __init__(self, default=None):
+        self._default = default
+        self._instance_values = {}
+        self._changed_events = {}
+
+    def get_event(self, instance):
+        return self._changed_events.setdefault(instance, Event())
+
+    def __get__(self, instance, _):
+        return self._instance_values.setdefault(instance, self._default)
+
+    def __set__(self, instance, value):
+        self._instance_values[instance] = value
+
+        event = self.get_event(instance)
+        event.trigger(value)
