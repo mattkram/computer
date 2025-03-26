@@ -20,7 +20,7 @@ class App:
 _registered_handlers = {}
 
 
-def on(attr_name: str, event="event"):
+def on(attr_name: str, event="changed"):
     def decorator(method):
         _registered_handlers[method] = (attr_name, event)
         return method

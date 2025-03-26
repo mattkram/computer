@@ -25,7 +25,7 @@ class Switch(Component):
     def on_click(self, e=None):
         self.is_open = not self.is_open
 
-    @on("self.is_open", event="changed")
+    @on("self.is_open")
     def draw(self, e=None):
         switch_element = page[f"{self.selector}-switch"]
         status_element = page[f"{self.selector}-status"]
@@ -48,12 +48,12 @@ class Light(Component):
         super().__init__(input=input)
         self._element = div(className="lightbulb", id=self.id)
 
-    @on("self.input.is_open", event="changed")
+    @on("self.input.is_open")
     def on_input_state_changed(self, e=None):
         # Toggle the light state
         self.is_on = not self.is_on
 
-    @on("self.is_on", event="changed")
+    @on("self.is_on")
     def draw(self):
         if self.is_on:
             self._element.classes.add("on")
