@@ -1,3 +1,5 @@
+from random import random
+
 from pyscript.web import div, page
 
 from app import App, Component, Input, State, on
@@ -7,6 +9,7 @@ class Switch(Component):
     is_open = State(default=True)
 
     __css_class__ = "switch-container"
+    __style__ = {"position": "absolute"}
 
     @property
     def children(self):
@@ -38,6 +41,10 @@ class Switch(Component):
             switch_element.classes.remove("open")
             status_element.textContent = "CLOSED"
 
+        self.element.style["position"] = "absolute"
+        self.element.style["top"] = f"{random() * 90}%"
+        self.element.style["left"] = f"{random() * 90}%"
+
 
 class Light(Component):
     input = Input()
@@ -58,7 +65,7 @@ class Light(Component):
 
 
 # Compose the UI
-app = App()
+app = App(className="canvas")
 
 # Make two independent switches
 for i in range(2):

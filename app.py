@@ -3,14 +3,20 @@ from pyscript.web import div, page, when
 
 
 class App:
-    def __init__(self, components=None):
+    def __init__(self, components=None, **kwargs):
+        self._div_args = kwargs
         self._components = components or []
 
     def add_component(self, component):
         self._components.append(component)
 
     def run(self):
-        page.append(div(children=[component.element for component in self._components]))
+        page.append(
+            div(
+                children=[component.element for component in self._components],
+                **self._div_args,
+            )
+        )
         for component in self._components:
             component._finish()
 
@@ -33,6 +39,7 @@ class Component:
             setattr(self, name, value)
 
     __css_class__ = None
+    __style__ = None
 
     @property
     def children(self):
@@ -41,7 +48,12 @@ class Component:
     @property
     def element(self):
         if self._element is None:
-            self._element = div(self.children, id=self.id, className=self.__css_class__)
+            self._element = div(
+                self.children,
+                id=self.id,
+                className=self.__css_class__,
+                style=self.__style__,
+            )
         return self._element
 
     @property
