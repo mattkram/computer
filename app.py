@@ -87,20 +87,28 @@ class Component:
         self.draw()
 
 
-class State:
+class Input:
     def __init__(self, default=None):
         self._default = default
         self._instance_values = {}
-        self._changed_events = {}
-
-    def get_event(self, instance):
-        return self._changed_events.setdefault(instance, Event())
 
     def __get__(self, instance, _):
         return self._instance_values.setdefault(instance, self._default)
 
     def __set__(self, instance, value):
         self._instance_values[instance] = value
+
+
+class State(Input):
+    def __init__(self, default=None):
+        super().__init__(default=default)
+        self._changed_events = {}
+
+    def get_event(self, instance):
+        return self._changed_events.setdefault(instance, Event())
+
+    def __set__(self, instance, value):
+        super().__set__(instance, value)
 
         event = self.get_event(instance)
         event.trigger(value)
