@@ -2,6 +2,36 @@ from pyscript import Event
 from pyscript.web import div, page, when
 
 
+class Input:
+    def __init__(self, default=None, default_factory=None):
+        self._default = default
+        self._default_factory = default_factory
+        self._instance_values = {}
+
+    def __get__(self, instance, _):
+        return self._instance_values.setdefault(
+            instance,
+            self._default_factory() if self._default_factory else self._default,
+        )
+
+    def __set__(self, instance, value):
+        self._instance_values[instance] = value
+
+
+class State(Input):
+    def __init__(self, default=None):
+        super().__init__(default=default)
+        self._changed_events = {}
+
+    def get_event(self, instance):
+        return self._changed_events.setdefault(instance, Event())
+
+    def __set__(self, instance, value):
+        super().__set__(instance, value)
+        event = self.get_event(instance)
+        event.trigger(value)
+
+
 class App:
     def __init__(self, components=None, **kwargs):
         self._div_args = kwargs
@@ -112,33 +142,3 @@ class Component:
                 raise ValueError(f"Unimplemented event type {event}")
 
         self.draw()
-
-
-class Input:
-    def __init__(self, default=None, default_factory=None):
-        self._default = default
-        self._default_factory = default_factory
-        self._instance_values = {}
-
-    def __get__(self, instance, _):
-        return self._instance_values.setdefault(
-            instance,
-            self._default_factory() if self._default_factory else self._default,
-        )
-
-    def __set__(self, instance, value):
-        self._instance_values[instance] = value
-
-
-class State(Input):
-    def __init__(self, default=None):
-        super().__init__(default=default)
-        self._changed_events = {}
-
-    def get_event(self, instance):
-        return self._changed_events.setdefault(instance, Event())
-
-    def __set__(self, instance, value):
-        super().__set__(instance, value)
-        event = self.get_event(instance)
-        event.trigger(value)
