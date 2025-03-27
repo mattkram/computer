@@ -79,7 +79,7 @@ body {
     top: calc(50% - 5px);
     left: 30%;
     transform-origin: left center;
-    transition: transform 0.3s ease;
+    transition: transform 0.2s ease;
     border-radius: 5px;
 }
 
