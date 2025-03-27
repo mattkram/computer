@@ -9,6 +9,9 @@ class Input:
         self._instance_values = {}
 
     def __get__(self, instance, _):
+        if instance is None:
+            # This is the class, not the instance
+            return self
         return self._instance_values.setdefault(
             instance,
             self._default_factory() if self._default_factory else self._default,
