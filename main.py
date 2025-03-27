@@ -117,17 +117,21 @@ app = App(className="canvas")
 
 # Make two independent switches
 for i in range(2):
-    switch = Switch()
-    light = Light(input=switch)
+    switch = Switch(x=0.1, y=0.5 * i)
+    light = Light(input=switch, x=0.5, y=0.5 * i)
     app.add_component(switch)
     app.add_component(light)
-
-for component in app._components:
-    component.x = random()
-    component.y = random()
 
 clock = Clock()
 app.add_component(clock)
 
 clock.run()
 app.run()
+
+# This is a hack for a bug. For some reason, the positions don't get set when the app runs.
+for component in app._components:
+    try:
+        component.x = component.x
+        component.y = component.y
+    except AttributeError:
+        pass
