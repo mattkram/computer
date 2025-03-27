@@ -131,9 +131,10 @@ clock = Clock()
 app.add_component(clock)
 
 # Make two independent switches
-for i in range(2):
-    switch = Switch(x=0.1, y=0.5 * i, clock=clock)
-    light = Light(input=switch, x=0.5, y=0.5 * i, clock=clock)
+for i in range(5):
+    y = 0.2 * i + 0.05
+    switch = Switch(x=0.1, y=y, clock=clock)
+    light = Light(input=switch, x=0.5, y=y, clock=clock)
 
     # Make the second switch randomly toggle
     switch.react_to_clock = True
