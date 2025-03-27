@@ -7,6 +7,9 @@ from app import App, Component, Input, State, on
 
 
 class Switch(Component):
+    clock = Input()
+    react_to_clock = Input(default=False)
+
     x = State(default_factory=random)
     y = State(default_factory=random)
 
@@ -30,6 +33,11 @@ class Switch(Component):
     @on(event="click")
     def toggle_state(self):
         self.is_open = not self.is_open
+
+    @on("self.clock.num_cycles")
+    def on_clock_cycle(self):
+        if self.react_to_clock and random() >= 0.5:
+            self.is_open = not self.is_open
 
     @on("self.is_open")
     def draw(self):
@@ -69,6 +77,9 @@ class Light(Component):
 
     @on("self.input.is_open")
     def toggle_state(self):
+        # This is a bug. We toggle the light every time switch state is set.
+        # Instead, we need to read self.input.is_open and derive self.is_on
+        # from that.
         self.is_on = not self.is_on
 
     @on("self.is_on")
@@ -115,15 +126,20 @@ class Clock(Component):
 # Compose the UI
 app = App(className="canvas")
 
-# Make two independent switches
-for i in range(2):
-    switch = Switch(x=0.1, y=0.5 * i)
-    light = Light(input=switch, x=0.5, y=0.5 * i)
-    app.add_component(switch)
-    app.add_component(light)
-
+# Create the clock
 clock = Clock()
 app.add_component(clock)
+
+# Make two independent switches
+for i in range(2):
+    switch = Switch(x=0.1, y=0.5 * i, clock=clock)
+    light = Light(input=switch, x=0.5, y=0.5 * i, clock=clock)
+
+    # Make the second switch randomly toggle
+    switch.react_to_clock = True
+
+    app.add_component(switch)
+    app.add_component(light)
 
 clock.run()
 app.run()
