@@ -28,8 +28,8 @@ body {
 
 .switch-container {
     width: 300px;
-    height: 150px;
     background-color: #333;
+    height: 100px;
     border-radius: 10px;
     position: relative;
 }
