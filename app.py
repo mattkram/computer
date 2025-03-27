@@ -19,8 +19,8 @@ class Input:
 
 
 class State(Input):
-    def __init__(self, default=None):
-        super().__init__(default=default)
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
         self._changed_events = {}
 
     def get_event(self, instance):
