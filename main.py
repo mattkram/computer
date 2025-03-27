@@ -14,6 +14,7 @@ class Switch(Component):
     y = State(default_factory=random)
 
     is_open = State(default=True)
+    output = State(default=0)
 
     __css_class__ = "switch-container"
     __style__ = {"position": "absolute"}
@@ -45,10 +46,12 @@ class Switch(Component):
         status_element = page[f"{self.selector}-status"]
 
         if self.is_open:
+            self.output = 0
             switch_element.classes.add("open")
             switch_element.classes.remove("closed")
             status_element.textContent = "OPEN"
         else:
+            self.output = 1
             switch_element.classes.add("closed")
             switch_element.classes.remove("open")
             status_element.textContent = "CLOSED"
@@ -75,9 +78,9 @@ class Light(Component):
     __style__ = {"position": "absolute"}
     __css_class__ = "lightbulb"
 
-    @on("self.input.is_open")
+    @on("self.input.output")
     def toggle_state(self):
-        self.is_on = not self.input.is_open
+        self.is_on = bool(self.input.output)
 
     @on("self.is_on")
     def draw(self):
