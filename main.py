@@ -101,6 +101,7 @@ class Light(Component):
 
 
 class Clock(Component):
+    clock_rate = State(default=1)
     num_cycles = State(default=0)
 
     __css_class__ = "clock"
@@ -112,7 +113,7 @@ class Clock(Component):
     def run(self):
         async def timer_loop():
             while True:
-                await asyncio.sleep(1)
+                await asyncio.sleep(1 / self.clock_rate)
                 self.num_cycles += 1
 
         asyncio.ensure_future(timer_loop())
@@ -127,7 +128,7 @@ class Clock(Component):
 app = App(className="canvas")
 
 # Create the clock
-clock = Clock()
+clock = Clock(clock_rate=2)
 app.add_component(clock)
 
 # Make two independent switches
