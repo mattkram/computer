@@ -115,12 +115,16 @@ class Component:
 
 
 class Input:
-    def __init__(self, default=None):
+    def __init__(self, default=None, default_factory=None):
         self._default = default
+        self._default_factory = default_factory
         self._instance_values = {}
 
     def __get__(self, instance, _):
-        return self._instance_values.setdefault(instance, self._default)
+        return self._instance_values.setdefault(
+            instance,
+            self._default_factory() if self._default_factory else self._default,
+        )
 
     def __set__(self, instance, value):
         self._instance_values[instance] = value

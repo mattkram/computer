@@ -6,6 +6,9 @@ from app import App, Component, Input, State, on
 
 
 class Switch(Component):
+    x = Input(default_factory=random)
+    y = Input(default_factory=random)
+
     is_open = State(default=True)
 
     __css_class__ = "switch-container"
@@ -41,9 +44,8 @@ class Switch(Component):
             switch_element.classes.remove("open")
             status_element.textContent = "CLOSED"
 
-        self.element.style["position"] = "absolute"
-        self.element.style["top"] = f"{random() * 90}%"
-        self.element.style["left"] = f"{random() * 90}%"
+        self.element.style["top"] = f"{self.y * 90}%"
+        self.element.style["left"] = f"{self.x * 90}%"
 
 
 class Light(Component):
