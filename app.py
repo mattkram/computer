@@ -81,8 +81,13 @@ class Component:
     @property
     def element(self):
         if self._element is None:
+            if not isinstance(self.children, (list, tuple)):
+                children = [self.children]
+            else:
+                children = self.children
+
             self._element = div(
-                self.children,
+                *children,
                 id=self.id,
                 className=self.__css_class__,
                 style=self.__style__,

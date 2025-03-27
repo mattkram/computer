@@ -130,4 +130,7 @@ body {
     top: 10px;
     right: 10px;
     z-index: 1000;
+    text-align: right;
+    border: 2px solid black;
+    padding: 0px 10px;
 }

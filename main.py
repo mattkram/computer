@@ -1,7 +1,7 @@
 import asyncio
 from random import random
 
-from pyscript.web import div, page, p
+from pyscript.web import div, page, p, span
 
 from app import App, Component, Input, State, on
 
@@ -77,10 +77,7 @@ class Light(Component):
 
     @on("self.input.is_open")
     def toggle_state(self):
-        # This is a bug. We toggle the light every time switch state is set.
-        # Instead, we need to read self.input.is_open and derive self.is_on
-        # from that.
-        self.is_on = not self.is_on
+        self.is_on = not self.input.is_open
 
     @on("self.is_on")
     def draw(self):
@@ -108,7 +105,10 @@ class Clock(Component):
 
     @property
     def children(self):
-        return p("", id="clock-text")
+        return [
+            p("Cycle count: ", span(id="cycle-count")),
+            p("Clock rate (Hz): ", span(id="clock-rate")),
+        ]
 
     def run(self):
         async def timer_loop():
@@ -120,8 +120,8 @@ class Clock(Component):
 
     @on("self.num_cycles")
     def draw(self):
-        text_element = page["#clock-text"]
-        text_element.innerHTML = f"Cycle count: {self.num_cycles}"
+        page["#cycle-count"].innerHTML = self.num_cycles
+        page["#clock-rate"].innerHTML = self.clock_rate
 
 
 # Compose the UI
