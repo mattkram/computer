@@ -37,7 +37,7 @@ class Switch(Component):
 
     @on("self.clock.num_cycles")
     def on_clock_cycle(self):
-        if self.react_to_clock and random() >= 0.5:
+        if self.react_to_clock and random() >= 0.8:
             self.is_open = not self.is_open
 
     @on("self.is_open")
