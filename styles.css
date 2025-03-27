@@ -64,6 +64,7 @@ body {
     position: absolute;
     width: 40%;
     height: 6px;
+    opacity: 0;
     background-color: #aaa;
     top: 50%;
     left: 30%;
@@ -88,14 +89,13 @@ body {
 }
 
 .switch.closed .circuit-line-left,
-.switch.closed .circuit-line-right,
-.switch.closed .switch-base {
+.switch.closed .circuit-line-right {
     background-color: red;
 }
 
 /* Open state */
 .switch.open .switch-lever {
-    transform: rotate(-45deg);
+    transform: rotate(-30deg);
 }
 
 .switch.open .circuit-line-left,
