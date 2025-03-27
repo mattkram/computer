@@ -124,3 +124,10 @@ body {
     height: 100vh;
     background-color: #f0f0f0;",
 }
+
+.clock {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 1000;
+}

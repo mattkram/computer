@@ -1,6 +1,7 @@
+import asyncio
 from random import random
 
-from pyscript.web import div, page
+from pyscript.web import div, page, p
 
 from app import App, Component, Input, State, on
 
@@ -88,6 +89,29 @@ class Light(Component):
         self.element.style["top"] = f"{self.y * 90}%"
 
 
+class Clock(Component):
+    num_cycles = State(default=0)
+
+    __css_class__ = "clock"
+
+    @property
+    def children(self):
+        return p("", id="clock-text")
+
+    def run(self):
+        async def timer_loop():
+            while True:
+                await asyncio.sleep(1)
+                self.num_cycles += 1
+
+        asyncio.ensure_future(timer_loop())
+
+    @on("self.num_cycles")
+    def draw(self):
+        text_element = page["#clock-text"]
+        text_element.innerHTML = f"Cycle count: {self.num_cycles}"
+
+
 # Compose the UI
 app = App(className="canvas")
 
@@ -98,8 +122,12 @@ for i in range(2):
     app.add_component(switch)
     app.add_component(light)
 
-app.run()
-
 for component in app._components:
     component.x = random()
     component.y = random()
+
+clock = Clock()
+app.add_component(clock)
+
+clock.run()
+app.run()
