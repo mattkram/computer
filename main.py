@@ -6,8 +6,8 @@ from app import App, Component, Input, State, on
 
 
 class Switch(Component):
-    x = Input(default_factory=random)
-    y = Input(default_factory=random)
+    x = State(default_factory=random)
+    y = State(default_factory=random)
 
     is_open = State(default=True)
 
@@ -44,14 +44,26 @@ class Switch(Component):
             switch_element.classes.remove("open")
             status_element.textContent = "CLOSED"
 
-        self.element.style["top"] = f"{self.y * 90}%"
+    @on("self.x")
+    def update_x_position(self):
+        print(f"Setting x position to {self.x=}")
         self.element.style["left"] = f"{self.x * 90}%"
+
+    @on("self.y")
+    def update_y_position(self):
+        print(f"Setting y position to {self.y=}")
+        self.element.style["top"] = f"{self.y * 90}%"
 
 
 class Light(Component):
     input = Input()
+
+    x = State(default_factory=random)
+    y = State(default_factory=random)
+
     is_on = State(default=False)
 
+    __style__ = {"position": "absolute"}
     __css_class__ = "lightbulb"
 
     @on("self.input.is_open")
@@ -65,6 +77,16 @@ class Light(Component):
         else:
             self._element.classes.remove("on")
 
+    @on("self.x")
+    def update_x_position(self):
+        print(f"Setting x position to {self.x=}")
+        self.element.style["left"] = f"{self.x * 90}%"
+
+    @on("self.y")
+    def update_y_position(self):
+        print(f"Setting y position to {self.y=}")
+        self.element.style["top"] = f"{self.y * 90}%"
+
 
 # Compose the UI
 app = App(className="canvas")
@@ -77,3 +99,7 @@ for i in range(2):
     app.add_component(light)
 
 app.run()
+
+for component in app._components:
+    component.x = random()
+    component.y = random()
