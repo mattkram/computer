@@ -58,12 +58,10 @@ class Switch(Component):
 
     @on("self.x")
     def update_x_position(self):
-        print(f"Setting x position to {self.x=}")
         self.element.style["left"] = f"{self.x * 90}%"
 
     @on("self.y")
     def update_y_position(self):
-        print(f"Setting y position to {self.y=}")
         self.element.style["top"] = f"{self.y * 90}%"
 
 
@@ -89,14 +87,35 @@ class Light(Component):
         else:
             self._element.classes.remove("on")
 
+    count = 0
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.svg_id = f"circuit-node-{self.count}"
+        Light.count += 1
+
+    @on("self.is_on")
+    def draw_node_color(self):
+        svg_object = page["#my-svg-object"]
+
+        # It's a list and not indexing freezes the thread
+        svg_doc = svg_object.contentDocument[0]
+
+        circle = svg_doc.getElementById(self.svg_id)
+        if circle is None:
+            return
+
+        if self.is_on:
+            circle.style.fill = "red"
+        else:
+            circle.style.fill = "black"
+
     @on("self.x")
     def update_x_position(self):
-        print(f"Setting x position to {self.x=}")
         self.element.style["left"] = f"{self.x * 90}%"
 
     @on("self.y")
     def update_y_position(self):
-        print(f"Setting y position to {self.y=}")
         self.element.style["top"] = f"{self.y * 90}%"
 
 
@@ -135,7 +154,7 @@ clock = Clock(clock_rate=2)
 app.add_component(clock)
 
 # Make two independent switches
-for i in range(5):
+for i in range(4):
     y = 0.2 * i + 0.05
     switch = Switch(x=0.1, y=y, clock=clock)
     light = Light(input=switch, x=0.5, y=y, clock=clock)
