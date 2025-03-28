@@ -11,6 +11,7 @@
       stroke: none;
       fill-opacity: 1;
       fill: black;
+      cursor: move;
   }
 
   .node-label {
@@ -47,9 +48,6 @@
 
     // Make nodes draggable
     nodes.forEach((node, index) => {
-      // Add cursor style
-      node.style.cursor = 'move';
-
       // Mouse down event
       node.addEventListener('mousedown', (evt) => {
         selectedNode = { element: node, index: index };
