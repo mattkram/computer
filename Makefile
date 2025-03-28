@@ -13,7 +13,9 @@ dev:  ## Serve them in live-reload mode
 		--files "**/*.html" \
 		--files "**/*.js" \
 		--files "**/*.css" \
+		--files "**/*.svg" \
 		--files "**/*.py" \
+		--no-inject-changes \
 		--open external \
 		--host "127.0.0.1" \
 		--no-notify \
