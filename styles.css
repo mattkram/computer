@@ -134,3 +134,13 @@ body {
     border: 2px solid black;
     padding: 0px 10px;
 }
+
+.diagram-container {
+    width: 100%;
+
+            max-width: 700px;
+            margin-bottom: 30px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+}

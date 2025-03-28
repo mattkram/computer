@@ -1,0 +1,119 @@
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -50 300 300" width="400" height="400">
+
+  <!-- Light grid background -->
+  <!--<defs>-->
+  <!--  <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">-->
+  <!--    <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#eee" stroke-width="1"/>-->
+  <!--  </pattern>-->
+  <!--</defs>-->
+  <!--<rect width="100%" height="100%" fill="url(#grid)" />-->
+
+  <!-- The square path that connects the nodes -->
+  <path id="squarePath" d="M 0,0 L 100,0 L 100,100 L 0,100 Z"
+        fill="none"
+        stroke="#3366CC"
+        stroke-width="2" />
+
+  <!-- Draggable corner nodes -->
+  <circle id="node0" cx="0" cy="0" r="8" fill="#4CAF50" fill-opacity="0.7" stroke="#2E7D32" stroke-width="2" />
+  <circle id="node1" cx="100" cy="0" r="8" fill="#4CAF50" fill-opacity="0.7" stroke="#2E7D32" stroke-width="2" />
+  <circle id="node2" cx="100" cy="100" r="8" fill="#4CAF50" fill-opacity="0.7" stroke="#2E7D32" stroke-width="2" />
+  <circle id="node3" cx="0" cy="100" r="8" fill="#4CAF50" fill-opacity="0.7" stroke="#2E7D32" stroke-width="2" />
+
+  <!-- Coordinate display for each node -->
+  <text id="coord0" x="0" y="-10" font-family="Arial" font-size="10" text-anchor="middle">(0,0)</text>
+  <text id="coord1" x="100" y="-10" font-family="Arial" font-size="10" text-anchor="middle">(100,0)</text>
+  <text id="coord2" x="100" y="115" font-family="Arial" font-size="10" text-anchor="middle">(100,100)</text>
+  <text id="coord3" x="0" y="115" font-family="Arial" font-size="10" text-anchor="middle">(0,100)</text>
+
+  <script type="text/javascript"><![CDATA[
+    // Get all nodes and the path
+    const nodes = [
+      document.getElementById('node0'),
+      document.getElementById('node1'),
+      document.getElementById('node2'),
+      document.getElementById('node3')
+    ];
+
+    const coordTexts = [
+      document.getElementById('coord0'),
+      document.getElementById('coord1'),
+      document.getElementById('coord2'),
+      document.getElementById('coord3')
+    ];
+
+    const path = document.getElementById('squarePath');
+
+    // Variables to track the currently dragged element
+    let selectedNode = null;
+    let offset = { x: 0, y: 0 };
+
+    // Make nodes draggable
+    nodes.forEach((node, index) => {
+      // Add cursor style
+      node.style.cursor = 'move';
+
+      // Mouse down event
+      node.addEventListener('mousedown', (evt) => {
+        selectedNode = { element: node, index: index };
+        const CTM = node.ownerSVGElement.getScreenCTM();
+
+        // Calculate offset
+        offset.x = (evt.clientX - CTM.e) / CTM.a - parseFloat(node.getAttribute('cx'));
+        offset.y = (evt.clientY - CTM.f) / CTM.d - parseFloat(node.getAttribute('cy'));
+
+        // Visual feedback
+        node.setAttribute('r', '10');
+        node.setAttribute('fill-opacity', '1');
+
+        evt.preventDefault();
+      });
+    });
+
+    // Mouse move event (for dragging)
+    document.addEventListener('mousemove', (evt) => {
+      if (selectedNode) {
+        evt.preventDefault();
+
+        const CTM = selectedNode.element.ownerSVGElement.getScreenCTM();
+
+        // Calculate new position
+        const x = (evt.clientX - CTM.e) / CTM.a - offset.x;
+        const y = (evt.clientY - CTM.f) / CTM.d - offset.y;
+
+        // Update node position
+        selectedNode.element.setAttribute('cx', x);
+        selectedNode.element.setAttribute('cy', y);
+
+        // Update coordinate text
+        coordTexts[selectedNode.index].setAttribute('x', x);
+        coordTexts[selectedNode.index].setAttribute('y', y > 50 ? y + 15 : y - 10);
+        coordTexts[selectedNode.index].textContent = `(${Math.round(x)},${Math.round(y)})`;
+
+        // Update the path
+        updatePath();
+      }
+    });
+
+    // Mouse up event (for releasing)
+    document.addEventListener('mouseup', () => {
+      if (selectedNode) {
+        // Reset visual feedback
+        selectedNode.element.setAttribute('r', '8');
+        selectedNode.element.setAttribute('fill-opacity', '0.7');
+        selectedNode = null;
+      }
+    });
+
+    // Update the path to connect all nodes
+    function updatePath() {
+      const pathData = nodes.map((node, index) => {
+        const x = parseFloat(node.getAttribute('cx'));
+        const y = parseFloat(node.getAttribute('cy'));
+        return (index === 0 ? 'M ' : 'L ') + x + ',' + y;
+      }).join(' ') + ' Z';
+
+      path.setAttribute('d', pathData);
+    }
+  ]]></script>
+</svg>
