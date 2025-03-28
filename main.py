@@ -64,6 +64,31 @@ class Switch(Component):
     def update_y_position(self):
         self.element.style["top"] = f"{self.y * 90}%"
 
+    count = 0
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.svg_id = f"switch-{self.count}"
+        Switch.count += 1
+
+    @on("self.is_open")
+    def draw_on_svg(self):
+        svg_object = page["#my-svg-object"]
+
+        # It's a list and not indexing freezes the thread
+        svg_doc = svg_object.contentDocument[0]
+
+        switch_element = svg_doc.getElementById(self.svg_id)
+        if switch_element is None:
+            return
+
+        if self.is_open:
+            switch_element.classList.add("open")
+            switch_element.classList.remove("closed")
+        else:
+            switch_element.classList.add("closed")
+            switch_element.classList.remove("open")
+
 
 class Light(Component):
     input = Input()
@@ -109,6 +134,13 @@ class Light(Component):
             circle.style.fill = "red"
         else:
             circle.style.fill = "black"
+
+        bulb = svg_doc.getElementById(self.svg_id.replace("circuit-node", "lightbulb"))
+        if bulb:
+            if self.is_on:
+                bulb.classList.add("on")
+            else:
+                bulb.classList.remove("on")
 
     @on("self.x")
     def update_x_position(self):
