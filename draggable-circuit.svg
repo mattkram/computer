@@ -45,23 +45,21 @@
     // Variables to track the currently dragged element
     let selectedNode = null;
     let offset = { x: 0, y: 0 };
+    let CTM = null;
 
     // Make nodes draggable
     nodes.forEach((node, index) => {
       // Mouse down event
       node.addEventListener('mousedown', (evt) => {
+        evt.preventDefault();
+
+        // Store the selected node globally
         selectedNode = { element: node, index: index };
-        const CTM = node.ownerSVGElement.getScreenCTM();
+        CTM = node.ownerSVGElement.getScreenCTM();
 
         // Calculate offset
         offset.x = (evt.clientX - CTM.e) / CTM.a - parseFloat(node.getAttribute('cx'));
         offset.y = (evt.clientY - CTM.f) / CTM.d - parseFloat(node.getAttribute('cy'));
-
-        // Visual feedback
-        node.setAttribute('r', '10');
-        node.setAttribute('fill-opacity', '1');
-
-        evt.preventDefault();
       });
     });
 
@@ -69,8 +67,6 @@
     document.addEventListener('mousemove', (evt) => {
       if (selectedNode) {
         evt.preventDefault();
-
-        const CTM = selectedNode.element.ownerSVGElement.getScreenCTM();
 
         // Calculate new position
         const x = (evt.clientX - CTM.e) / CTM.a - offset.x;
@@ -93,9 +89,6 @@
     // Mouse up event (for releasing)
     document.addEventListener('mouseup', () => {
       if (selectedNode) {
-        // Reset visual feedback
-        selectedNode.element.setAttribute('r', '8');
-        selectedNode.element.setAttribute('fill-opacity', '0.7');
         selectedNode = null;
       }
     });
