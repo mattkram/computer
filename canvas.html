@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Computer</title>
+
+    <!-- Recommended meta tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+    <!-- PyScript CSS -->
+    <link rel="stylesheet" href="https://pyscript.net/releases/2025.3.1/core.css">
+    <link rel="stylesheet" href="./styles.css">
+
+    <!-- This script tag bootstraps PyScript -->
+    <script type="module" src="https://pyscript.net/releases/2025.3.1/core.js"></script>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
+        }
+        canvas {
+            border: 1px solid #ccc;
+            background-color: white;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!--<div class="diagram-container">-->
+    <!--    <object id="my-svg-object" data="./draggable-circuit.svg" type="image/svg+xml">-->
+    <!--      Fallback content if SVG cannot be displayed-->
+    <!--    </object>-->
+    <!--</div>-->
+    <!--<script type="py" src="./canvas.py" config="./pyscript.toml"></script>-->
+    <canvas id="circleCanvas" width="400" height="400"></canvas>
+    <script src="drawing.js"></script>
+</body>
+</html>
