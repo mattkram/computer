@@ -116,38 +116,42 @@ function drawSwitch(circuit) {
     ctx.stroke();
 }
 
-// Draw the switches
-// Do each twice to ensure they canvas is cleared
-drawSwitch({
-    x: 20,
-    y: 100,
-    isOpen: true,
-});
-drawSwitch({
-    x: 20,
-    y: 100,
-    isOpen: false,
-});
-drawSwitch({
-    x: 20,
-    y: 200,
-    isOpen: false,
-});
-drawSwitch({
-    x: 20,
-    y: 200,
-    isOpen: true,
-});
-drawSwitch({
-    x: 20,
-    y: 300,
-    isOpen: true,
-});
-drawSwitch({
-    x: 20,
-    y: 300,
-    isOpen: false,
-});
+function drawCircuit() {
+    // Draw the switches
+    // Do each twice to ensure they canvas is cleared
+    drawSwitch({
+        x: 20,
+        y: 100,
+        isOpen: true,
+    });
+    drawSwitch({
+        x: 20,
+        y: 100,
+        isOpen: false,
+    });
+    drawSwitch({
+        x: 20,
+        y: 200,
+        isOpen: false,
+    });
+    drawSwitch({
+        x: 20,
+        y: 200,
+        isOpen: true,
+    });
+    drawSwitch({
+        x: 20,
+        y: 300,
+        isOpen: true,
+    });
+    drawSwitch({
+        x: 20,
+        y: 300,
+        isOpen: false,
+    });
+}
+
+drawCircuit();
 
 //// Handle click events for the switch
 //canvas.addEventListener('click', function(event) {
