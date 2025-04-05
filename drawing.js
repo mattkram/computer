@@ -94,12 +94,13 @@ function drawSwitch(circuit) {
     ctx.lineTo(100, 0);
     //ctx.stroke();
 
-    // Now, we will draw an angled line
+    // Now, we will draw a line for the switch.
     // We translate the origin to the end of previous line and then rotate
     // the reference frame. We restore afterwards.
+    const angleDegrees = circuit.isOpen ? 30 : 0;
     ctx.translate(100, 0);
     ctx.save();  // 1
-    ctx.rotate(-30 * Math.PI / 180);
+    ctx.rotate(-angleDegrees * Math.PI / 180);
     ctx.lineTo(100, 0);
     ctx.restore();  // 1
 
@@ -119,14 +120,17 @@ function drawSwitch(circuit) {
 drawSwitch({
     x: 20,
     y: 100,
+    isOpen: true,
 });
 drawSwitch({
     x: 20,
     y: 200,
+    isOpen: false,
 });
 drawSwitch({
     x: 20,
     y: 300,
+    isOpen: true,
 });
 
 //// Handle click events for the switch
