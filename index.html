@@ -13,13 +13,81 @@
 
     <!-- This script tag bootstraps PyScript -->
     <script type="module" src="https://pyscript.net/releases/2025.3.1/core.js"></script>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
+        }
+        canvas {
+            border: 1px solid #ccc;
+            background-color: white;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-    <div class="diagram-container">
-        <object id="my-svg-object" data="./draggable-circuit.svg" type="image/svg+xml">
-          Fallback content if SVG cannot be displayed
-        </object>
-    </div>
+    <!--<div class="diagram-container">-->
+    <!--    <object id="my-svg-object" data="./draggable-circuit.svg" type="image/svg+xml">-->
+    <!--      Fallback content if SVG cannot be displayed-->
+    <!--    </object>-->
+    <!--</div>-->
     <script type="py" src="./main.py" config="./pyscript.toml"></script>
+    <canvas id="circleCanvas" width="400" height="400"></canvas>
+
+    <script>
+        // Get the canvas element and its context
+        const canvas = document.getElementById('circleCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Circle properties
+        const circle = {
+            x: canvas.width / 2,
+            y: canvas.height / 2,
+            radius: 80,
+            color: '#808080', // Start with grey
+            isYellow: false
+        };
+
+        // Draw the circle initially
+        drawCircle();
+
+        // Function to draw the circle
+        function drawCircle() {
+            // Clear the canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw the circle
+            ctx.beginPath();
+            ctx.arc(circle.x, circle.y, circle.radius, 0, Math.PI * 2);
+            ctx.fillStyle = circle.color;
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        // Handle click events
+        canvas.addEventListener('click', function(event) {
+            // Get mouse position relative to canvas
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = event.clientX - rect.left;
+            const mouseY = event.clientY - rect.top;
+
+            // Check if click is inside circle
+            const distance = Math.sqrt(
+                Math.pow(mouseX - circle.x, 2) +
+                Math.pow(mouseY - circle.y, 2)
+            );
+
+            // If click is inside circle, toggle color
+            if (distance <= circle.radius) {
+                circle.isYellow = !circle.isYellow;
+                circle.color = circle.isYellow ? '#FFFF00' : '#808080';
+                drawCircle();
+            }
+        });
+    </script>
 </body>
 </html>

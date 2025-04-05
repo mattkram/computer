@@ -71,23 +71,23 @@ class Switch(Component):
         self.svg_id = f"switch-{self.count}"
         Switch.count += 1
 
-    @on("self.is_open")
-    def draw_on_svg(self):
-        svg_object = page["#my-svg-object"]
-
-        # It's a list and not indexing freezes the thread
-        svg_doc = svg_object.contentDocument[0]
-
-        switch_element = svg_doc.getElementById(self.svg_id)
-        if switch_element is None:
-            return
-
-        if self.is_open:
-            switch_element.classList.add("open")
-            switch_element.classList.remove("closed")
-        else:
-            switch_element.classList.add("closed")
-            switch_element.classList.remove("open")
+    # @on("self.is_open")
+    # def draw_on_svg(self):
+    #     svg_object = page["#my-svg-object"]
+    #
+    #     # It's a list and not indexing freezes the thread
+    #     svg_doc = svg_object.contentDocument[0]
+    #
+    #     switch_element = svg_doc.getElementById(self.svg_id)
+    #     if switch_element is None:
+    #         return
+    #
+    #     if self.is_open:
+    #         switch_element.classList.add("open")
+    #         switch_element.classList.remove("closed")
+    #     else:
+    #         switch_element.classList.add("closed")
+    #         switch_element.classList.remove("open")
 
 
 class Light(Component):
@@ -119,28 +119,28 @@ class Light(Component):
         self.svg_id = f"circuit-node-{self.count}"
         Light.count += 1
 
-    @on("self.is_on")
-    def draw_node_color(self):
-        svg_object = page["#my-svg-object"]
-
-        # It's a list and not indexing freezes the thread
-        svg_doc = svg_object.contentDocument[0]
-
-        circle = svg_doc.getElementById(self.svg_id)
-        if circle is None:
-            return
-
-        if self.is_on:
-            circle.style.fill = "red"
-        else:
-            circle.style.fill = "black"
-
-        bulb = svg_doc.getElementById(self.svg_id.replace("circuit-node", "lightbulb"))
-        if bulb:
-            if self.is_on:
-                bulb.classList.add("on")
-            else:
-                bulb.classList.remove("on")
+    # @on("self.is_on")
+    # def draw_node_color(self):
+    #     svg_object = page["#my-svg-object"]
+    #
+    #     # It's a list and not indexing freezes the thread
+    #     svg_doc = svg_object.contentDocument[0]
+    #
+    #     circle = svg_doc.getElementById(self.svg_id)
+    #     if circle is None:
+    #         return
+    #
+    #     if self.is_on:
+    #         circle.style.fill = "red"
+    #     else:
+    #         circle.style.fill = "black"
+    #
+    #     bulb = svg_doc.getElementById(self.svg_id.replace("circuit-node", "lightbulb"))
+    #     if bulb:
+    #         if self.is_on:
+    #             bulb.classList.add("on")
+    #         else:
+    #             bulb.classList.remove("on")
 
     @on("self.x")
     def update_x_position(self):
