@@ -3,3 +3,4 @@ packages = []
 
 [files]
 "./app.py" = ""
+"./components.py" = ""

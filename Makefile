@@ -14,6 +14,7 @@ dev:  ## Serve them in live-reload mode
 		--files "**/*.js" \
 		--files "**/*.css" \
 		--files "**/*.svg" \
+		--files "**/*.toml" \
 		--files "**/*.py" \
 		--no-inject-changes \
 		--open external \
