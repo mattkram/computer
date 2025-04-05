@@ -72,8 +72,6 @@ function drawCircle() {
 
 // Function to draw the circuit
 function drawSwitch(circuit) {
-    // Clear the canvas
-    //ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     // Set line properties
     ctx.lineWidth = 3;
@@ -81,18 +79,20 @@ function drawSwitch(circuit) {
     //ctx.lineJoin = 'round';
     //ctx.strokeStyle = '#000';
 
-    // Start building a path
-    ctx.beginPath();
-
     // Move the the base position where the switch will be placed
     ctx.save();  // 0
     ctx.translate(circuit.x, circuit.y);
-    //ctx.translate(20, 100);
+
+    // We know the max height of the switch, so we can clear the canvas.
+    const maxHeight = 52.5;  // 100 * sin(30deg), plus some margin
+    ctx.clearRect(0, -maxHeight, 300, maxHeight + 5);
+
+    // Start building a path
+    ctx.beginPath();
 
     // Draw a horizontal line
     ctx.moveTo(0, 0);
     ctx.lineTo(100, 0);
-    //ctx.stroke();
 
     // Now, we will draw a line for the switch.
     // We translate the origin to the end of previous line and then rotate
@@ -116,11 +116,17 @@ function drawSwitch(circuit) {
     ctx.stroke();
 }
 
-// Draw the circuit initially
+// Draw the switches
+// Do each twice to ensure they canvas is cleared
 drawSwitch({
     x: 20,
     y: 100,
     isOpen: true,
+});
+drawSwitch({
+    x: 20,
+    y: 100,
+    isOpen: false,
 });
 drawSwitch({
     x: 20,
@@ -129,8 +135,18 @@ drawSwitch({
 });
 drawSwitch({
     x: 20,
+    y: 200,
+    isOpen: true,
+});
+drawSwitch({
+    x: 20,
     y: 300,
     isOpen: true,
+});
+drawSwitch({
+    x: 20,
+    y: 300,
+    isOpen: false,
 });
 
 //// Handle click events for the switch
